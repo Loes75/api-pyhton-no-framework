@@ -13,7 +13,15 @@ class BookService:
         self.__view_format_factory = ViewFormatFactory()
 
     @staticmethod
-    def get_all_books(environ: dict, start_response, args):
+    def get_all_books(environ: dict, start_response, args) -> [bytes]:
+        """
+        Returns all available books, their info and the total
+        :param environ: The WSGI environment
+        :param start_response: the response callable provided by the WSGI server.
+        :param args: arguments of the request
+        :return : Response in bytes
+        """
+
         session = create_session()
         books = session.query(Book)
         total = 0
@@ -31,7 +39,14 @@ class BookService:
         return response(environ, start_response)
 
     @staticmethod
-    def get_book(environ: dict, start_response, args):
+    def get_book(environ: dict, start_response, args) -> [bytes]:
+        """
+        Returns book filter by id
+        :param environ: The WSGI environment
+        :param start_response: the response callable provided by the WSGI server.
+        :param args: arguments of the request
+        :return : Response in bytes
+        """
         session = create_session()
         book = session.query(Book).get(args['id'])
         if book is not None:
@@ -41,6 +56,13 @@ class BookService:
         return response(environ, start_response)
 
     def read_book(self, environ: dict, start_response, args):
+        """
+        Returns a page of the selected book in the requested format
+        :param environ: The WSGI environment
+        :param start_response: the response callable provided by the WSGI server.
+        :param args: arguments of the request
+        :return : Response in bytes
+        """
         page = args['page']
         view_format = args['format']
         session = create_session()

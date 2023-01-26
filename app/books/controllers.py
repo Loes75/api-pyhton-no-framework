@@ -6,6 +6,9 @@ books_service = BookService()
 
 
 def books_router(environ, start_response, endpoint, args):
+    """
+      Routes to the requested services
+    """
     method = environ['REQUEST_METHOD']
     if method == 'GET':
         if endpoint == 'library/':

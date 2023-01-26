@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from app.db import db_init
 
 load_dotenv()  # Loads environment variables from .env file
-db_init()  # Initialize DB session
+db_init()  # Initialize db session
 
 if __name__ == "__main__":
     try:
@@ -16,4 +16,3 @@ if __name__ == "__main__":
         print(f"{time.asctime()} Server listening on http://localhost:{PORT}")
     except KeyboardInterrupt:
         print(f"{time.asctime()} Server down")
-    #         httpd.server_close()
