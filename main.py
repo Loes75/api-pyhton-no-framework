@@ -6,8 +6,8 @@ from werkzeug.serving import run_simple
 from dotenv import load_dotenv
 from app.db import db_init
 
-db_init()  # Initialize DB session
 load_dotenv()  # Loads environment variables from .env file
+db_init()  # Initialize DB session
 
 if __name__ == "__main__":
     try:

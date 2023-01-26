@@ -17,11 +17,9 @@ def app(environ, start_response):
     try:
         endpoint, args = urls.match()
         path = environ["PATH_INFO"]
-        print(f"path: {path}, endpoint: {endpoint}, args: {str(args)}")
         if 'library' in endpoint:
             return books_router(environ=environ, start_response=start_response, endpoint=endpoint, args=args)
         elif 'welcome' in endpoint:
-            request = Request(environ)
             response = Response(f"Welcome to the Library API")
             return response(environ, start_response)
         else:
