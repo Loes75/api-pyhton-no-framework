@@ -1,16 +1,19 @@
-from werkzeug.wrappers import Request, Response
+import json
+from werkzeug.exceptions import NotFound
+from werkzeug.wrappers import Response
 
 from app.commons.commons import Commons
 from app.db import Book, create_session
-import json
+from app.formats.view_format_factory import ViewFormatFactory
 
 
 class BookService:
 
     def __init__(self):
-        pass
+        self.__view_format_factory = ViewFormatFactory()
 
-    def get_all_books(self, environ: dict, start_response, args):
+    @staticmethod
+    def get_all_books(environ: dict, start_response, args):
         session = create_session()
         books = session.query(Book)
         total = 0
@@ -27,7 +30,8 @@ class BookService:
                             content_type="application/json")
         return response(environ, start_response)
 
-    def get_book(self, environ: dict, start_response, args):
+    @staticmethod
+    def get_book(environ: dict, start_response, args):
         session = create_session()
         book = session.query(Book).get(args['id'])
         if book is not None:
@@ -37,5 +41,20 @@ class BookService:
         return response(environ, start_response)
 
     def read_book(self, environ: dict, start_response, args):
-        response = Response(f"reading book")
-        return response(environ, start_response)
+        page = args['page']
+        view_format = args['format']
+        session = create_session()
+        book = session.query(Book).get(args['id'])
+        if book is not None:
+            book = book.to_dict()
+            if page > len(book['pages']):
+                raise NotFound
+            else:
+                data = {
+                    'book': book,
+                    'page': str(page)
+                }
+                view_format_service = self.__view_format_factory.get_format(view_format=view_format)
+                return view_format_service.reading(data=data, environ=environ, start_response=start_response)
+        else:
+            raise NotFound
